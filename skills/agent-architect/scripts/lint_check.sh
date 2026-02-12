@@ -22,7 +22,8 @@ NC='\033[0m' # No Color
 FIX_MODE=false
 EXIT_CODE=0
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# Navigate up from skills/agent-architect/scripts/ to project root
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
