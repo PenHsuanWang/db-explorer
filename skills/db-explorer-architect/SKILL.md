@@ -47,10 +47,14 @@ Checks:
 - Universal types: Normalize provider-specific types to `UniversalDataType` (e.g. TEXT, INTEGER, FLOAT, TIMESTAMP) at the adapter boundary.
 - Streaming-first: Use streaming (generator-based) query execution and Server-Sent Events (SSE) or chunked responses for large result sets.
 - Read-only-by-default: Adapters should be implemented for read-only access unless an explicit admin capability is authorized and audited.
+- Python Standards: Follow comprehensive Python coding standards (see `references/python-standards.md`)
+- Design Patterns: Apply appropriate design patterns for maintainability (see `references/design-patterns.md`)
 
 ## Tools & Scripts
 - `scripts/scaffold_adapter.py`: CLI helper to generate adapter skeletons.
 - `scripts/run_query.py`: Small runner used by integration tests and local dev to exercise `DatabasePort` connectors.
+- `scripts/lint_check.sh`: Run all code quality checks (black, isort, mypy, ruff, safety)
+- `scripts/run_tests.sh`: Run pytest with coverage reporting and various test filtering options
 
 ## Example Invocation
 CLI:
@@ -85,7 +89,25 @@ JSON example for query feature:
 - Unit tests for domain and application layers.
 - Integration tests for each adapter using test fixtures or ephemeral containers.
 - Contract tests to validate `DatabasePort` behavior across adapters.
+- Code quality checks:
+  - Format: Run `black` and `isort` for consistent code style
+  - Type Check: Run `mypy --strict` to ensure type safety
+  - Lint: Run `ruff check` to catch common issues
+  - Coverage: Achieve 80%+ test coverage with `pytest --cov`
+  - Security: Run `safety check` to scan for vulnerabilities
 
 ## References
 - See `references/architecture.md` for architecture rules and connector requirements.
+- See `references/python-standards.md` for comprehensive Python coding standards, including:
+  - Code style, formatting, and linting (Black, isort, Ruff)
+  - Type hinting best practices (PEP 484, 585, 604)
+  - Google-style docstrings (PEP 257)
+  - Error handling and SOLID principles
+  - Testing requirements (pytest, 80% coverage)
+  - Performance, security, and logging standards
+- See `references/design-patterns.md` for design pattern implementations:
+  - Creational Patterns: Factory, Builder
+  - Structural Patterns: Adapter, Decorator
+  - Behavioral Patterns: Strategy, Iterator, Observer
+
 
