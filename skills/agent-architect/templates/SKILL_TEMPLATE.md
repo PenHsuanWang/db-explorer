@@ -16,5 +16,15 @@ argument-hint: [args]
 ## Tools
 *   `scripts/[script_name].py`: [Description]
 
+## Code Quality
+- **Formatting**: Black (line length 100), isort
+- **Linting**: Ruff
+- **Type Checking**: Mypy (strict mode)
+- **Testing**: Pytest with 80%+ coverage
+
+## Scripts
+*   `scripts/lint_check.sh`: Run all code quality checks
+*   `scripts/run_tests.sh`: Run test suite with coverage
+
 ## References
 See `references/` for detailed documentation.
