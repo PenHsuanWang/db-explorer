@@ -123,8 +123,30 @@ db-explorer/
 **Architecture**: Hexagonal (Ports & Adapters)
 - **Domain Layer** (`src/core/domain`): Pure Python, zero external dependencies
 - **Ports** (`src/core/ports`): Abstract interfaces (e.g., DatabasePort)
-- **Application** (`src/application`): Use cases orchestrating domain logic
+- **Application** (`src/application`): Use cases orchestrating domain logic, including the `CleaningEngine`
 - **Adapters** (`src/adapters`): External integrations (FastAPI, databases)
+
+**Data Flow** (fetch → clean → serve):
+```
+API (FastAPI) → DataService → CleaningEngine → DatabasePort → Remote DB
+```
+- `DatabasePort` fetches **raw, unmodified rows** from the remote database (read-only).
+- `CleaningEngine` (`src/application/cleaning_engine.py`) transforms raw rows in memory:
+  - **Normalization**: standardize string encoding, trim whitespace, unify `NULL`-like values.
+  - **Deduplication**: remove exact-duplicate rows before returning to the API.
+  - **Type Casting**: map provider-specific types to `UniversalDataType` values.
+- API returns **cleaned, uniformly-formatted JSON** — the frontend always receives a consistent schema.
+
+**Read-Only Enforcement**:
+- Every `DatabasePort` implementation **must** use a read-only connection (e.g., `SET TRANSACTION READ ONLY`, `readonly=True` driver option, or a DB user with SELECT-only privileges).
+- The `execute_safe_read` method must parse the SQL statement and raise `ReadOnlyViolationError` if it detects `INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `TRUNCATE`, `CREATE`, or `MERGE` keywords before sending the query to the database.
+
+**Adding New Database Connector**:
+1. Create adapter: `backend/src/adapters/driven/[db-name].py`
+2. Implement `DatabasePort` interface from `src/core/ports/database.py`; enforce read-only mode in `connect()`.
+3. Add to factory: `backend/src/adapters/driven/factory.py`
+4. Add integration tests: `backend/tests/integration/test_[db-name].py`
+5. Update configuration: `backend/src/config.py`
 
 **Code Quality Standards**:
 - Formatting: Black (line-length 100)
@@ -154,13 +176,6 @@ pytest tests/ --cov=src --cov-report=term-missing
 # All checks
 ../skills/db-explorer-architect/scripts/lint_backend.sh --fix
 ```
-
-**Adding New Database Connector**:
-1. Create adapter: `backend/src/adapters/driven/[db-name].py`
-2. Implement `DatabasePort` interface from `src/core/ports/database.py`
-3. Add to factory: `backend/src/adapters/driven/factory.py`
-4. Add integration tests: `backend/tests/integration/test_[db-name].py`
-5. Update configuration: `backend/src/config.py`
 
 ### 2. Frontend Development (React + TypeScript)
 
@@ -220,7 +235,26 @@ npm run build
 3. Follow component standards (see `references/react-standards.md`)
 4. Add tests with React Testing Library
 
-### 3. Integration & Deployment
+### 3. User Cleaning & View Rules
+
+Users can configure how fetched data is displayed and cleaned **without touching the remote database**. All rules are applied client-side or by the `CleaningEngine` in the backend.
+
+**Supported cleaning / view rules (examples)**:
+- **Hide null values**: rows or cells where a value is `NULL` / empty are excluded from the displayed result set.
+- **Standardize date format**: all `TIMESTAMP` / date columns are converted to ISO-8601 (`YYYY-MM-DDTHH:mm:ssZ`) before display.
+- **Trim whitespace**: leading and trailing whitespace is stripped from string columns.
+- **Column aliasing**: users can rename columns in the UI without changing the underlying query.
+- **Type override**: force a column to be displayed as a specific `UniversalDataType` when the connector returns an ambiguous type.
+
+**How rules are applied** (backend flow):
+1. The API receives a `CleaningConfig` alongside the SQL query.
+2. `DataService` forwards raw rows from `DatabasePort` to `CleaningEngine.apply(rows, config)`.
+3. `CleaningEngine` applies each enabled rule in order and returns the cleaned `List[UniversalRow]`.
+4. The API serialises the result to JSON and returns it to the frontend.
+
+**Frontend contract**: the frontend always receives a `UniversalFormat` response — a list of objects with `{ column: string, type: UniversalDataType, value: any }` entries — regardless of the source database.
+
+### 4. Integration & Deployment
 
 **Docker Setup**:
 - File: `docker-compose.yml` at project root
