@@ -75,6 +75,6 @@ Required when `adapters/`, `ports/`, or `application/` is modified. Skip this se
 ## Pre-Submission Checklist
 
 - [ ] Self-review completed — no debug logs, no commented-out code, no hardcoded secrets or real DSNs.
-- [ ] New public functions and methods have Google-style docstrings and complete type annotations (PEP 484).
+- [ ] New public functions and methods have reStructuredText (reST) docstrings and complete type annotations (PEP 484).
 - [ ] `CLAUDE.md` or relevant architecture reference documents updated if contracts or data flow changed.
 - [ ] PR title follows Conventional Commits: `<type>(<scope>): <subject>` — e.g., `feat(adapter-oracle): add streaming cursor support`.

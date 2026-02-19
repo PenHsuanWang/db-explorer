@@ -29,7 +29,7 @@ Run this skill whenever you are about to open a PR and want Claude to draft or r
 
 Before generating the description, collect:
 
-1. **Ticket / Issue number** — from GitHub Issues (e.g., `#42`).
+1. **Ticket / Issue number** — from the issue tracker (e.g., `#42` for GitHub, `PROJ-123` for Jira/Bitbucket).
 2. **Type of change** — one of: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
 3. **Affected layers** — select all that apply:
    - `backend/src/core/domain`
@@ -65,7 +65,7 @@ Copy the following block into your Pull Request description.
 
 One or two sentences. Answer: what changed and why?
 
-Closes #[issue-number]
+Closes [issue-reference]
 
 ## Type of Change
 
@@ -115,7 +115,7 @@ If a new connector adapter: confirm read-only enforcement and UniversalDataType 
 ## Pre-Submission Checklist
 
 - [ ] Self-review completed — no debug logs, no commented-out code, no hardcoded secrets.
-- [ ] New public functions have Google-style docstrings and complete type annotations.
+- [ ] New public functions have reStructuredText (reST) docstrings and complete type annotations.
 - [ ] CLAUDE.md or architecture reference docs updated if contracts changed.
 - [ ] PR title follows Conventional Commits format: type(scope): subject
 
@@ -126,7 +126,7 @@ If a new connector adapter: confirm read-only enforcement and UniversalDataType 
 | Field | Mandatory | Guidance |
 | :--- | :---: | :--- |
 | Summary | Yes | Must state what changed and why. Do not restate the diff. |
-| Closes #issue | Yes | Use GitHub keyword (Closes, Fixes) to auto-close the issue on merge. |
+| Closes [issue] | Yes | Use platform keywords (Closes, Fixes, Resolves) to auto-link/close the issue. |
 | Type of Change | Yes | Select exactly one; if multiple apply, split into separate PRs. |
 | Affected Layers | Yes | Helps reviewers scope their focus; hexagonal layer boundaries are strict. |
 | Implementation Notes | Yes | Required for breaking type; optional but strongly recommended for all others. |
