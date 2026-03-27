@@ -10,6 +10,15 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     metadata_db_path: str = ":memory:"
 
+    DATABASE_URL: str = "postgresql+asyncpg://dbexplorer:dbexplorer@localhost:5432/dbexplorer"
+    REDIS_URL: str = "redis://localhost:6379/0"
+
+    JWT_SECRET: str = "change-me-in-production"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRE_MINUTES: int = 30
+
+    ENCRYPTION_KEY: str = "change-me-in-production-must-be-32-bytes"
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

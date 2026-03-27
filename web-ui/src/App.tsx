@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import type { SearchResult, CleaningConfig } from './types/api'
 import type { PinnedTable } from './types/workbench'
 import { useSearch } from './hooks/useSearch'
@@ -7,6 +8,10 @@ import { SearchResults } from './components/SearchResults'
 import { PeekModal } from './components/PeekModal'
 import { Workbench } from './components/Workbench'
 import { ConnectionStatus } from './components/ConnectionStatus'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
+import { AuthProvider } from './contexts/AuthContext'
 import styles from './App.module.css'
 
 type View = 'search' | 'results' | 'workbench'
@@ -17,7 +22,7 @@ const DEFAULT_CLEANING_CONFIG: CleaningConfig = {
   trim_strings: true,
 }
 
-export default function App() {
+function MainView() {
   const [view, setView] = useState<View>('search')
   const [searchQuery, setSearchQuery] = useState('')
   const [pinnedTables, setPinnedTables] = useState<PinnedTable[]>([])
@@ -101,5 +106,19 @@ export default function App() {
 
       {view !== 'workbench' && <ConnectionStatus />}
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/*" element={<MainView />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }

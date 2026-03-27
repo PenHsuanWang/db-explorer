@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, SecretStr
 
 
 class CleaningConfig(BaseModel):
@@ -61,3 +61,80 @@ class SearchRequest(BaseModel):
     deep_search: bool = False
     source_filter: Optional[list[str]] = None
     match_type_filter: Optional[str] = None
+
+
+# ---------------------------------------------------------------------------
+# Authentication schemas
+# ---------------------------------------------------------------------------
+
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str = Field(..., min_length=3, max_length=100)
+    password: str = Field(..., min_length=8)
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    username: str
+    is_active: bool
+    created_at: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TokenPayload(BaseModel):
+    sub: str  # user_id
+    exp: int
+
+
+# ---------------------------------------------------------------------------
+# Saved workbench schemas
+# ---------------------------------------------------------------------------
+
+
+class SavedWorkbenchCreate(BaseModel):
+    name: str
+    panes_config: dict = Field(default_factory=dict)
+    cleaning_cfg: dict = Field(default_factory=dict)
+
+
+class SavedWorkbenchResponse(BaseModel):
+    id: str
+    name: str
+    panes_config: dict
+    cleaning_cfg: dict
+    created_at: str
+    updated_at: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# Job schemas
+# ---------------------------------------------------------------------------
+
+
+class JobCreate(BaseModel):
+    job_type: str
+    payload: dict = Field(default_factory=dict)
+
+
+class JobResponse(BaseModel):
+    id: str
+    job_type: str
+    status: str
+    payload: Optional[dict] = None
+    progress_meta: Optional[dict] = None
+    result_data: Optional[dict] = None
+    error_message: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+    model_config = ConfigDict(from_attributes=True)
