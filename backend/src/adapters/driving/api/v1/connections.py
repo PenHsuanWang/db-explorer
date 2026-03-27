@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.application.data_service import DataService
 from src.core.domain.models import ConnectionConfig
-from src.dependencies import get_data_service
+from src.dependencies import get_current_user, get_data_service
 
 router = APIRouter(prefix="/connections", tags=["connections"])
 
@@ -16,6 +16,7 @@ router = APIRouter(prefix="/connections", tags=["connections"])
 async def add_connection(
     config: ConnectionConfig,
     service: Annotated[DataService, Depends(get_data_service)],
+    current_user: Annotated[dict, Depends(get_current_user)],
 ) -> dict:
     if not config.id:
         config = config.model_copy(update={"id": str(uuid.uuid4())})
@@ -29,6 +30,7 @@ async def add_connection(
 @router.get("")
 async def list_connections(
     service: Annotated[DataService, Depends(get_data_service)],
+    current_user: Annotated[dict, Depends(get_current_user)],
 ) -> list[dict]:
     return service.list_connections()
 
@@ -37,6 +39,7 @@ async def list_connections(
 async def remove_connection(
     connection_id: str,
     service: Annotated[DataService, Depends(get_data_service)],
+    current_user: Annotated[dict, Depends(get_current_user)],
 ) -> dict:
     try:
         service.remove_connection(connection_id)
