@@ -27,7 +27,7 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
         db_type="mock",
     )
     try:
-        service.add_connection(mock_config)
+        service.add_connection(mock_config, user_id="system")
         logger.info("Mock connector registered and indexed.")
     except Exception:
         logger.exception("Failed to register mock connector at startup.")

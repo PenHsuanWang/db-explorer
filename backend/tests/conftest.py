@@ -52,7 +52,7 @@ def data_service(mock_connector: MockConnector) -> DataService:
     config = ConnectionConfig(id="test-mock", name="Test Mock", db_type="mock")
     factory.create(config)
     indexer = MetadataIndexer(db_path=":memory:")
-    indexer.index_connection("test-mock", mock_connector)
+    indexer.index_connection("test-mock", mock_connector, user_id=_MOCK_USER["id"])
     engine = CleaningEngine()
     return DataService(factory=factory, indexer=indexer, cleaning_engine=engine)
 

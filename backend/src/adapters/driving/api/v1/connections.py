@@ -21,7 +21,7 @@ async def add_connection(
     if not config.id:
         config = config.model_copy(update={"id": str(uuid.uuid4())})
     try:
-        connection_id = service.add_connection(config)
+        connection_id = service.add_connection(config, user_id=current_user["id"])
     except Exception as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     return {"connection_id": connection_id}
@@ -42,7 +42,7 @@ async def remove_connection(
     current_user: Annotated[dict, Depends(get_current_user)],
 ) -> dict:
     try:
-        service.remove_connection(connection_id)
+        service.remove_connection(connection_id, user_id=current_user["id"])
     except Exception as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     return {"deleted": connection_id}
