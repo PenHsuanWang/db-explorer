@@ -9,9 +9,13 @@ import { PeekModal } from './components/PeekModal'
 import { Workbench } from './components/Workbench'
 import { ConnectionStatus } from './components/ConnectionStatus'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { ToastContainer } from './components/Toast'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { JobsPage } from './pages/JobsPage'
 import { AuthProvider } from './contexts/AuthContext'
+import { ConnectionProvider } from './contexts/ConnectionContext'
 import styles from './App.module.css'
 
 type View = 'search' | 'results' | 'workbench'
@@ -111,14 +115,20 @@ function MainView() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/*" element={<MainView />} />
-        </Route>
-      </Routes>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ConnectionProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/jobs" element={<JobsPage />} />
+              <Route path="/*" element={<MainView />} />
+            </Route>
+          </Routes>
+          <ToastContainer />
+        </ConnectionProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
