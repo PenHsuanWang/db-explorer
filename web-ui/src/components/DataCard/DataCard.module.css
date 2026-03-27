@@ -1,0 +1,146 @@
+.card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: #58a6ff;
+  box-shadow: 0 0 12px rgba(88, 166, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  font-size: 18px;
+}
+
+.dbType {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8b949e;
+  letter-spacing: 0.5px;
+  background: #21262d;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.tableName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e6edf3;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breadcrumb {
+  font-size: 11px;
+  color: #8b949e;
+}
+
+.matchSnippet {
+  font-size: 12px;
+  color: #c9d1d9;
+  background: #0d1117;
+  border-left: 2px solid #58a6ff;
+  padding: 6px 10px;
+  border-radius: 0 4px 4px 0;
+}
+
+.matchType {
+  color: #58a6ff;
+  font-weight: 600;
+}
+
+.preview {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.colBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #c9d1d9;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.colType {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.peekButton {
+  flex: 1;
+  padding: 7px;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #8b949e;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.peekButton:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+.pinButton {
+  flex: 1;
+  padding: 7px;
+  background: #238636;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pinButton:hover {
+  background: #2ea043;
+}
+
+.pinnedButton {
+  flex: 1;
+  padding: 7px;
+  background: rgba(63, 185, 80, 0.15);
+  border: 1px solid rgba(63, 185, 80, 0.4);
+  border-radius: 6px;
+  color: #3fb950;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pinnedButton:hover {
+  background: rgba(248, 81, 73, 0.15);
+  border-color: rgba(248, 81, 73, 0.4);
+  color: #f85149;
+}

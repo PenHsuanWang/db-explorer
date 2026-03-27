@@ -1,0 +1,155 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e6edf3;
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: #f85149;
+}
+
+.body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 20px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  color: #8b949e;
+}
+
+.error {
+  color: #f85149;
+}
+
+.tableWrapper {
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.th {
+  text-align: left;
+  padding: 8px 12px;
+  background: #21262d;
+  color: #8b949e;
+  font-weight: 600;
+  border-bottom: 1px solid #30363d;
+  white-space: nowrap;
+}
+
+.colType {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #484f58;
+  margin-top: 2px;
+}
+
+.tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tr:hover {
+  background: rgba(88, 166, 255, 0.05);
+}
+
+.td {
+  padding: 8px 12px;
+  color: #c9d1d9;
+  border-bottom: 1px solid #21262d;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nullValue {
+  color: #484f58;
+  font-style: italic;
+}
+
+.footer {
+  padding: 12px 20px;
+  border-top: 1px solid #30363d;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.pinButton {
+  padding: 8px 20px;
+  background: #238636;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pinButton:hover {
+  background: #2ea043;
+}
+
+.pinnedButton {
+  padding: 8px 20px;
+  background: rgba(63, 185, 80, 0.15);
+  border: 1px solid rgba(63, 185, 80, 0.4);
+  border-radius: 6px;
+  color: #3fb950;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+}
