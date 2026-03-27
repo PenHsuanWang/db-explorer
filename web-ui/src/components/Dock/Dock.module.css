@@ -1,0 +1,67 @@
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #161b22;
+  border-top: 1px solid #30363d;
+  flex-wrap: wrap;
+}
+
+.dockLabel {
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid rgba(88, 166, 255, 0.3);
+  border-radius: 20px;
+  color: #58a6ff;
+  font-size: 12px;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.removeBtn:hover {
+  color: #f85149;
+}
+
+.workbenchButton {
+  padding: 6px 16px;
+  background: #58a6ff;
+  color: #0d1117;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.workbenchButton:hover {
+  background: #79c0ff;
+}

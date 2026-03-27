@@ -1,0 +1,25 @@
+backend/**/__pycache__
+backend/**/*.pyc
+backend/.env
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.env
+.env.local
+
+# Node
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# Misc
+.DS_Store
+*.log
