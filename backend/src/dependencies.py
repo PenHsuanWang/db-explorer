@@ -7,8 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.adapters.driven.factory import ConnectorFactory
 from src.application.auth_service import AuthService
 from src.application.cleaning_engine import CleaningEngine
+from src.application.connection_service import ConnectionService
 from src.application.data_service import DataService
+from src.application.job_service import JobService
 from src.application.metadata_indexer import MetadataIndexer
+from src.application.workbench_service import WorkbenchService
 from src.infrastructure.database import get_db_session
 from src.infrastructure.security import decode_token
 
@@ -18,6 +21,9 @@ _indexer = MetadataIndexer()
 _engine = CleaningEngine()
 _data_service = DataService(factory=_factory, indexer=_indexer, cleaning_engine=_engine)
 _auth_service = AuthService()
+_connection_service = ConnectionService()
+_workbench_service = WorkbenchService()
+_job_service = JobService()
 
 
 def get_data_service() -> DataService:
@@ -26,6 +32,18 @@ def get_data_service() -> DataService:
 
 def get_auth_service() -> AuthService:
     return _auth_service
+
+
+def get_connection_service() -> ConnectionService:
+    return _connection_service
+
+
+def get_workbench_service() -> WorkbenchService:
+    return _workbench_service
+
+
+def get_job_service() -> JobService:
+    return _job_service
 
 
 async def get_current_user(

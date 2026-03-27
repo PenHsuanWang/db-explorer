@@ -92,3 +92,49 @@ class UserResponse(BaseModel):
 class TokenPayload(BaseModel):
     sub: str  # user_id
     exp: int
+
+
+# ---------------------------------------------------------------------------
+# Saved workbench schemas
+# ---------------------------------------------------------------------------
+
+
+class SavedWorkbenchCreate(BaseModel):
+    name: str
+    panes_config: dict = Field(default_factory=dict)
+    cleaning_cfg: dict = Field(default_factory=dict)
+
+
+class SavedWorkbenchResponse(BaseModel):
+    id: str
+    name: str
+    panes_config: dict
+    cleaning_cfg: dict
+    created_at: str
+    updated_at: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# Job schemas
+# ---------------------------------------------------------------------------
+
+
+class JobCreate(BaseModel):
+    job_type: str
+    payload: dict = Field(default_factory=dict)
+
+
+class JobResponse(BaseModel):
+    id: str
+    job_type: str
+    status: str
+    payload: Optional[dict] = None
+    progress_meta: Optional[dict] = None
+    result_data: Optional[dict] = None
+    error_message: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+    model_config = ConfigDict(from_attributes=True)
