@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from typing import Any, Optional
 
 from src.core.domain.types import UniversalDataType
-from src.core.ports.database import ConfigurationError, DatabasePort
+from src.core.ports.database import ConfigurationError, DatabasePort, sanitize_identifier
 
 try:
     from clickhouse_driver import Client  # type: ignore[import-untyped]
@@ -101,8 +101,9 @@ class ClickHouseConnector(DatabasePort):
         table: str,
         schema: Optional[str] = None,
     ) -> dict[str, UniversalDataType]:
-        db = schema or self._database
-        sql = f"DESCRIBE TABLE {db}.{table}"  # noqa: S608
+        db = sanitize_identifier(schema or self._database)
+        safe_table = sanitize_identifier(table)
+        sql = f"DESCRIBE TABLE {db}.{safe_table}"  # noqa: S608
         self._validate_read_only(sql)
         rows = self._client.execute(sql)
         result: dict[str, UniversalDataType] = {}
@@ -113,7 +114,7 @@ class ClickHouseConnector(DatabasePort):
         return result
 
     def fetch_tables(self, schema: Optional[str] = None) -> list[dict[str, Any]]:
-        db = schema or self._database
+        db = sanitize_identifier(schema or self._database)
         sql = f"SHOW TABLES FROM {db}"  # noqa: S608
         self._validate_read_only(sql)
         rows = self._client.execute(sql)

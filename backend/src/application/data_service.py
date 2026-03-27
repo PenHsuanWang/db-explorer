@@ -14,7 +14,7 @@ from src.core.domain.models import (
     WorkbenchRequest,
 )
 from src.core.domain.types import UniversalRow
-from src.core.ports.database import DatabasePort
+from src.core.ports.database import DatabasePort, sanitize_identifier
 
 logger = logging.getLogger(__name__)
 
@@ -101,4 +101,7 @@ class DataService:
 
     @staticmethod
     def _qualify(table: str, schema: str | None) -> str:
-        return f"{schema}.{table}" if schema else table
+        safe_table = sanitize_identifier(table)
+        if schema:
+            return f"{sanitize_identifier(schema)}.{safe_table}"
+        return safe_table

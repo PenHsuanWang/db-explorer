@@ -56,7 +56,7 @@ def _cast_value(value: Any, target_type: UniversalDataType) -> Any:  # noqa: PLR
 
 def _row_fingerprint(row: dict[str, Any]) -> str:
     serialized = str(sorted(row.items()))
-    return hashlib.md5(serialized.encode()).hexdigest()  # noqa: S324
+    return hashlib.sha256(serialized.encode()).hexdigest()
 
 
 class CleaningEngine:

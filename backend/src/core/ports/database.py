@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from typing import Any, Optional
@@ -19,6 +20,24 @@ class ReadOnlyViolationError(ConnectorError):
 
 class ConfigurationError(ConnectorError):
     """Raised when the connector is misconfigured."""
+
+
+# Regex for safe SQL identifiers: letters, digits, underscores, dollar signs.
+# Rejects anything that could be used to inject SQL (spaces, quotes, semicolons, etc.).
+_SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]*$")
+
+
+def sanitize_identifier(name: str) -> str:
+    """Validate and return a safe SQL identifier.
+
+    Raises ConfigurationError if the identifier contains unsafe characters.
+    """
+    if not _SAFE_IDENTIFIER_RE.match(name):
+        raise ConfigurationError(
+            f"Unsafe SQL identifier '{name}'. "
+            "Identifiers must contain only letters, digits, underscores, or dollar signs."
+        )
+    return name
 
 
 _WRITE_KEYWORDS = frozenset(
@@ -90,8 +109,6 @@ class DatabasePort(ABC):
                 f"Write/DDL operation '{first_word}' is not permitted in read-only mode."
             )
         # Secondary check: scan entire statement for dangerous keywords at word boundaries
-        import re
-
         upper_sql = sql.upper()
         for kw in _WRITE_KEYWORDS:
             pattern = rf"\b{kw}\b"

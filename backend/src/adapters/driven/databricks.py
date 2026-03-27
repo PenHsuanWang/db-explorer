@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from typing import Any, Optional
 
 from src.core.domain.types import UniversalDataType
-from src.core.ports.database import ConfigurationError, DatabasePort
+from src.core.ports.database import ConfigurationError, DatabasePort, sanitize_identifier
 
 try:
     from databricks import sql as databricks_sql  # type: ignore[import-untyped]
@@ -105,8 +105,10 @@ class DatabricksConnector(DatabasePort):
         table: str,
         schema: Optional[str] = None,
     ) -> dict[str, UniversalDataType]:
-        db_schema = schema or self._schema
-        sql = f"DESCRIBE TABLE {self._catalog}.{db_schema}.{table}"  # noqa: S608
+        db_schema = sanitize_identifier(schema or self._schema)
+        safe_catalog = sanitize_identifier(self._catalog)
+        safe_table = sanitize_identifier(table)
+        sql = f"DESCRIBE TABLE {safe_catalog}.{db_schema}.{safe_table}"  # noqa: S608
         self._validate_read_only(sql)
         with self._conn.cursor() as cursor:
             cursor.execute(sql)
@@ -118,8 +120,9 @@ class DatabricksConnector(DatabasePort):
             return result
 
     def fetch_tables(self, schema: Optional[str] = None) -> list[dict[str, Any]]:
-        db_schema = schema or self._schema
-        sql = f"SHOW TABLES IN {self._catalog}.{db_schema}"  # noqa: S608
+        db_schema = sanitize_identifier(schema or self._schema)
+        safe_catalog = sanitize_identifier(self._catalog)
+        sql = f"SHOW TABLES IN {safe_catalog}.{db_schema}"  # noqa: S608
         self._validate_read_only(sql)
         with self._conn.cursor() as cursor:
             cursor.execute(sql)
