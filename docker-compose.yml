@@ -49,6 +49,24 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  celery_worker:
+    image: python:3.12-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install poetry --quiet &&
+               poetry install --no-interaction &&
+               poetry run celery -A src.infrastructure.celery_app worker --loglevel=info"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
   frontend:
     image: node:20
     working_dir: /app
