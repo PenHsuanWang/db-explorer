@@ -1,0 +1,27 @@
+services:
+  backend:
+    image: python:3.12-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install poetry --quiet &&
+               poetry install --no-interaction &&
+               poetry run uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+
+  frontend:
+    image: node:20
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web-ui:/app
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    restart: unless-stopped
