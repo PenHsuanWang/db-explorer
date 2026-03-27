@@ -1,4 +1,9 @@
-"""Async SQLAlchemy engine and session factory for the internal PostgreSQL database."""
+"""Async SQLAlchemy engine and session factory for the internal PostgreSQL database.
+
+NOTE: This manages the application's own internal database (users, connections,
+jobs, workbenches) — NOT the remote databases being explored.  The read-only
+constraint applies to remote database connections via DatabasePort, not here.
+"""
 
 from __future__ import annotations
 
