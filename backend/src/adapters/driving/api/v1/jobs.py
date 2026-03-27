@@ -144,7 +144,7 @@ async def stream_job_progress(
 
         try:
             while True:
-                message = pubsub.get_message(timeout=1.0)
+                message = pubsub.get_message(timeout=0.5)
                 if message and message["type"] == "message":
                     raw = message["data"]
                     if isinstance(raw, bytes):
@@ -156,7 +156,8 @@ async def stream_job_progress(
                     }
                     if data.get("event") == "complete":
                         break
-                await asyncio.sleep(0.1)
+                else:
+                    await asyncio.sleep(0.1)
         finally:
             pubsub.unsubscribe()
             pubsub.close()

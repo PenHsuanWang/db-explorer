@@ -21,13 +21,16 @@ def _get_redis_client() -> redis.Redis:
 
 def _publish_progress(job_id: str, event_type: str, data: dict[str, Any]) -> None:
     """Publish a progress event to Redis Pub/Sub."""
+    r: redis.Redis | None = None
     try:
         r = _get_redis_client()
         message = json.dumps({"event": event_type, **data})
         r.publish(f"job_progress:{job_id}", message)
-        r.close()
     except Exception:
         logger.exception("Failed to publish progress for job %s", job_id)
+    finally:
+        if r is not None:
+            r.close()
 
 
 def _update_job_sync(
@@ -41,7 +44,8 @@ def _update_job_sync(
     from sqlalchemy import create_engine, text
 
     db_url = settings.DATABASE_URL
-    # Convert async driver URLs to sync psycopg2
+    # Convert async driver URL to sync psycopg2 for Celery workers.
+    # DATABASE_URL is always 'postgresql+asyncpg://...' per config.py.
     sync_url = db_url.replace("postgresql+asyncpg", "postgresql+psycopg2")
     engine = create_engine(sync_url)
     try:
@@ -57,6 +61,7 @@ def _update_job_sync(
             if error_message is not None:
                 set_clauses.append("error_message = :error_message")
                 params["error_message"] = error_message
+            # Safe: set_clauses are hardcoded column names, not user input
             sql = f"UPDATE jobs SET {', '.join(set_clauses)} WHERE id = :job_id"  # noqa: E501
             conn.execute(text(sql), params)
             conn.commit()
