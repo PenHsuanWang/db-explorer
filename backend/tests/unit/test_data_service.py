@@ -5,20 +5,29 @@ from src.core.domain.models import PeekRequest, SearchRequest, WorkbenchPane, Wo
 
 
 def test_search_returns_results(data_service: DataService) -> None:
-    results = data_service.search(SearchRequest(query="user"))
+    results = data_service.search(
+        SearchRequest(query="user"),
+        user_id="00000000-0000-0000-0000-000000000001",
+    )
     assert len(results) > 0
     table_names = [r.table_name for r in results]
     assert any("USER" in t.upper() for t in table_names)
 
 
 def test_search_empty_query_returns_results(data_service: DataService) -> None:
-    results = data_service.search(SearchRequest(query=""))
+    results = data_service.search(
+        SearchRequest(query=""),
+        user_id="00000000-0000-0000-0000-000000000001",
+    )
     # empty LIKE pattern '%' matches everything
     assert isinstance(results, list)
 
 
 def test_search_with_source_filter(data_service: DataService) -> None:
-    results = data_service.search(SearchRequest(query="profit", source_filter=["test-mock"]))
+    results = data_service.search(
+        SearchRequest(query="profit", source_filter=["test-mock"]),
+        user_id="00000000-0000-0000-0000-000000000001",
+    )
     assert all(r.source_db == "test-mock" for r in results)
 
 

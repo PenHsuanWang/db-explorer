@@ -204,3 +204,132 @@
   color: #8b949e;
   text-align: center;
 }
+
+/* Save/Load toolbar */
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.actionButton {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #8b949e;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.actionButton:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+.saveInputGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.saveInput {
+  padding: 5px 10px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-size: 13px;
+  width: 160px;
+}
+
+.saveInput:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+
+.saveConfirm {
+  padding: 5px 12px;
+  background: #238636;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveConfirm:hover {
+  background: #2ea043;
+}
+
+.saveConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveCancel {
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #8b949e;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.saveCancel:hover {
+  color: #f85149;
+  border-color: #f85149;
+}
+
+.loadWrapper {
+  position: relative;
+}
+
+.loadMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 200px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.loadEmpty {
+  padding: 12px 16px;
+  color: #8b949e;
+  font-size: 13px;
+  text-align: center;
+}
+
+.loadItem {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #21262d;
+  color: #c9d1d9;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.loadItem:last-child {
+  border-bottom: none;
+}
+
+.loadItem:hover {
+  background: rgba(88, 166, 255, 0.08);
+  color: #58a6ff;
+}

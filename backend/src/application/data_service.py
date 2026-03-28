@@ -36,28 +36,28 @@ class DataService:
     # Connection management
     # ------------------------------------------------------------------
 
-    def add_connection(self, config: ConnectionConfig) -> str:
+    def add_connection(self, config: ConnectionConfig, *, user_id: str) -> str:
         if not config.id:
             config = config.model_copy(update={"id": str(uuid.uuid4())})
         connector = self._factory.create(config)
         connector.connect()
-        self._indexer.index_connection(config.id, connector)  # type: ignore[arg-type]
+        self._indexer.index_connection(config.id, connector, user_id=user_id)  # type: ignore[arg-type]
         logger.info("Added connection %s (%s)", config.id, config.name)
         return config.id  # type: ignore[return-value]
 
     def list_connections(self) -> list[dict[str, Any]]:
         return self._factory.list_connections()
 
-    def remove_connection(self, connection_id: str) -> None:
+    def remove_connection(self, connection_id: str, *, user_id: str) -> None:
         self._factory.remove(connection_id)
-        self._indexer.remove_connection(connection_id)
+        self._indexer.remove_connection(connection_id, user_id=user_id)
 
     # ------------------------------------------------------------------
     # Search
     # ------------------------------------------------------------------
 
-    def search(self, request: SearchRequest) -> list[SearchResult]:
-        results = self._indexer.search(request.query)
+    def search(self, request: SearchRequest, *, user_id: str) -> list[SearchResult]:
+        results = self._indexer.search(request.query, user_id=user_id)
         if request.source_filter:
             results = [r for r in results if r.source_db in request.source_filter]
         if request.match_type_filter:

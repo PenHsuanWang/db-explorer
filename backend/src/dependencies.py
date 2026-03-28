@@ -13,6 +13,7 @@ from src.application.job_service import JobService
 from src.application.metadata_indexer import MetadataIndexer
 from src.application.workbench_service import WorkbenchService
 from src.infrastructure.database import get_db_session
+from src.infrastructure.redis import RedisCache
 from src.infrastructure.security import decode_token
 
 # Single global instances (application-scoped singletons)
@@ -24,6 +25,7 @@ _auth_service = AuthService()
 _connection_service = ConnectionService()
 _workbench_service = WorkbenchService()
 _job_service = JobService()
+_cache = RedisCache()
 
 
 def get_data_service() -> DataService:
@@ -44,6 +46,10 @@ def get_workbench_service() -> WorkbenchService:
 
 def get_job_service() -> JobService:
     return _job_service
+
+
+def get_cache() -> RedisCache:
+    return _cache
 
 
 async def get_current_user(

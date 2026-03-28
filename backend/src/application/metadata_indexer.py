@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 _DDL = """
 CREATE TABLE IF NOT EXISTS metadata (
     id          TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL,
     connection_id TEXT NOT NULL,
     db_type     TEXT NOT NULL,
     schema_name TEXT,
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS metadata (
     full_text   TEXT NOT NULL    -- searchable blob
 );
 CREATE INDEX IF NOT EXISTS idx_full_text ON metadata(full_text);
+CREATE INDEX IF NOT EXISTS idx_user_id ON metadata(user_id);
 """
 
 
@@ -33,7 +35,9 @@ class MetadataIndexer:
         self._conn.executescript(_DDL)
         self._conn.commit()
 
-    def index_connection(self, connection_id: str, connector: DatabasePort) -> None:
+    def index_connection(
+        self, connection_id: str, connector: DatabasePort, *, user_id: str
+    ) -> None:
         """Crawl tables and columns from connector and store in SQLite."""
         try:
             tables = connector.fetch_tables()
@@ -53,6 +57,7 @@ class MetadataIndexer:
             rows_to_insert.append(
                 (
                     table_id,
+                    user_id,
                     connection_id,
                     db_type,
                     schema_name,
@@ -77,6 +82,7 @@ class MetadataIndexer:
                 rows_to_insert.append(
                     (
                         col_id,
+                        user_id,
                         connection_id,
                         db_type,
                         schema_name,
@@ -88,7 +94,7 @@ class MetadataIndexer:
                 )
 
         self._conn.executemany(
-            "INSERT OR REPLACE INTO metadata VALUES (?,?,?,?,?,?,?,?)",
+            "INSERT OR REPLACE INTO metadata VALUES (?,?,?,?,?,?,?,?,?)",
             rows_to_insert,
         )
         self._conn.commit()
@@ -96,20 +102,20 @@ class MetadataIndexer:
             "Indexed %d entries for connection %s", len(rows_to_insert), connection_id
         )
 
-    def search(self, query: str, limit: int = 50) -> list[SearchResult]:
-        """Fuzzy (LIKE) search over indexed metadata."""
+    def search(self, query: str, *, user_id: str, limit: int = 50) -> list[SearchResult]:
+        """Fuzzy (LIKE) search over indexed metadata scoped to a user."""
         pattern = f"%{query.lower()}%"
         cursor = self._conn.execute(
             """
             SELECT id, connection_id, db_type, schema_name, table_name, column_name, entry_type
             FROM metadata
-            WHERE full_text LIKE ?
+            WHERE user_id = ? AND full_text LIKE ?
             ORDER BY
                 CASE entry_type WHEN 'table' THEN 0 ELSE 1 END,
                 table_name
             LIMIT ?
             """,
-            (pattern, limit),
+            (user_id, pattern, limit),
         )
         results: list[SearchResult] = []
         for row in cursor.fetchall():
@@ -130,8 +136,11 @@ class MetadataIndexer:
             )
         return results
 
-    def remove_connection(self, connection_id: str) -> None:
-        self._conn.execute("DELETE FROM metadata WHERE connection_id = ?", (connection_id,))
+    def remove_connection(self, connection_id: str, *, user_id: str) -> None:
+        self._conn.execute(
+            "DELETE FROM metadata WHERE connection_id = ? AND user_id = ?",
+            (connection_id, user_id),
+        )
         self._conn.commit()
 
     def close(self) -> None:
